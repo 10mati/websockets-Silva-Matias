@@ -1,7 +1,7 @@
 
 // configuracion de socket del lado del cliente
 
-const socket = io();
+/*const socket = io();
 
 
 socket.emit('msgKey',"Hola soy el cliente enviando un mensaje ")
@@ -24,4 +24,4 @@ const productList = document.getElementById('product-list')
 
   </li>`).join('')
 
-})
+})*/

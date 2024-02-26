@@ -10,6 +10,8 @@ import ProductManager from "./Products/ProductManager.js";
 
 const app = express();
 const PORT = 8080
+const productsManager = new ProductManager();
+
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}));
@@ -19,8 +21,14 @@ app.engine('handlebars', handlebars.engine());
 app.set('views', __dirname + "/views");
 app.set('view engine', 'handlebars')
 
-app.use(express.static(__dirname + "/Public"))
-
+//app.use(express.static(__dirname + "/Public"))}
+app.use(express.static('Public', {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    }
+  }
+}));
 
 app.use("/api/products", ProductRouter)
 app.use("/api/carts", cartRouter)
@@ -33,41 +41,39 @@ const httpServer = app.listen(PORT, () => {
 
 const socketServer = new Server(httpServer);
 
-const getProducts = async () => {
-  const productManager = new ProductManager();
-  return await productManager.getProduct();
-}
+app.get("/", async (req, res) => {
+  const id = req.params.id;
+  const limit = req.query.limit;
+  try {
+      if (!!id) {
+          res.send(await productsManager.getProductById(id));
+      } else {
+          return res.render("home", { products: await productsManager.getAllProducts(limit) });
+      }
+  } catch (error) {
+      console.log(error);
+      res.status(500).send({ error: -1, description: "Error fetching products" });
+  }
+});
 
-const addProducts = async (product) => {
- const productManager = new ProductManager();
- return await productManager.addProducts(product);
-}
+app.get("/realTimeProducts", async (req, res) => {
+  return res.render("realTimeProducts");
+});
 
-socketServer.on('connection', async (socket) => {
-    console.log('Cliente conectado');
-    const products = await getProducts();
-    socket.emit('products', products);
+socketServer.on('connection', (socket) => {
+  console.log('User connected');
 
-    const newProducts = await addProducts();
-    socket.emit('products', newProducts);
+  socket.on('new-product', async (product) => {
+    console.log('New product:', product);
+    await productsManager.saveProduct(product);
+    socket.emit('new-product-list', await productsManager.getAllProducts());
+});
 
-  socket.on('msgKey', data => {
-   console.log(data);
-  })
+  socket.on('delete-product', (productId) => {
+      console.log('Delete product:', productId);
+  });
 
-  socketServer.on('connection', async (socket) => {
-    console.log('Cliente conectado');
-  
-    const products = await getProducts();
-    socket.emit('products', products);
-  
-    socket.on('new-product', async (newProduct) => {
-      const newProducts = await addProducts(newProduct);
-      socket.emit('products', newProducts);
-    });
-   })
-  
-   
-
-
+  socket.on('disconnect', () => {
+      console.log('User disconnected');
+  });
 });
