@@ -7,6 +7,7 @@ import cartRouter  from "./routes/carts.routes.js";
 import viewRouter from "./routes/views.routes.js"
 import ProductManager from "./dao/FileSystem/ProductManager.js";
 import mongoose from "mongoose";
+import { messageModels } from "./dao/MongoDb/models/messages.js";
 
 const app = express();
 const PORT = 8080
@@ -43,13 +44,18 @@ socketServer.on('connection', socket => {
 
     // aqui vamos a recibir { user: user, message: catBox.value }
     socket.on("message", data => {
-        messages.push(data)
+      const newMessage = new messageModels({
+        user: data.user,
+        message: data.message
+      });
 
-
+      newMessage.save()
+            .then(() => {
+                messages.push(data); 
         // enviamos un array de objetos ---> [{ user: "Juan", message: "Hola" }, { user: "Elias", message: "Como estas?" }]
         socketServer.emit('messageLogs', messages);
     });
-
+  });
 
     // hacemos un broadcast del nuevo usuario que se conecta al chat
     socket.on('userConnected', data => {
@@ -64,8 +70,6 @@ socketServer.on('connection', socket => {
             socket.disconnect();
     })
 
-   
-    
 })
 
 
