@@ -8,6 +8,8 @@ import viewRouter from "./routes/views.routes.js"
 import ProductManager from "./dao/FileSystem/ProductManager.js";
 import mongoose from "mongoose";
 import { messageModels } from "./dao/MongoDb/models/messages.js";
+import { cartModels } from "./dao/MongoDb/models/carts.js";
+
 
 const app = express();
 const PORT = 8080
@@ -126,6 +128,20 @@ app.post("/message", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).send({ error: -1, description: "Error al guardar los mensajes" });
+  }
+});
+
+app.post('/carts', async (req, res) => {
+  try {
+      // Crear un nuevo carrito con los datos del cuerpo de la solicitud
+      const newCart = new Cart(req.body);
+      
+      // Guardar el nuevo carrito en la base de datos
+      const savedCart = await newCart.save();
+      
+      res.status(201).json(savedCart); // Devolver el carrito creado
+  } catch (err) {
+      res.status(400).json({ message: err.message }); // Manejar errores
   }
 });
 
