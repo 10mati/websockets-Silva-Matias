@@ -1,11 +1,11 @@
-import { promises as fs } from 'fs'
+import { promises as fs } from 'fs';
 
 
 class ProductManager {
-    constructor() {
-        this.path = "./src/Models/products.json"
-    }
-    createProduct (id, name, timestamp, description, code, imageUrl, price, stock) {
+
+        productsFilePath = "src/Models/products.json";
+    
+    constructor (id, name, timestamp, description, code, imageUrl, price, stock) {
       this.id = id;
       this.timestamp = timestamp;
       this.name = name;
@@ -29,14 +29,15 @@ class ProductManager {
 
 async getAllProducts(limit = null) {
     try {
-        let fileContent = await fs.promises.readFile(this.productsFilePath, "utf8");
+        let fileContent = await fs.readFile(this.productsFilePath, 'utf-8');
         let products = JSON.parse(fileContent);
+        console.log(products);
         if (limit) {
             products = products.slice(0, limit);
         }
         return products;
     } catch (error) {
-        console.log(error);
+        console.error(error);
         throw new Error("Error al obtener todos los productos");
     }
 }
@@ -62,7 +63,7 @@ async saveProduct(newProduct) {
         // Agregar el nuevo producto a la lista
         products.push(newProduct);
         // Guardar la lista actualizada en el archivo JSON
-        await fs.promises.writeFile(this.productsFilePath, JSON.stringify(products, null, 2));
+        await fs.writeFile(this.productsFilePath, JSON.stringify(products, null, 2));
         return newProduct;
     } catch (error) {
         console.log(error);
@@ -72,13 +73,13 @@ async saveProduct(newProduct) {
 
   async deleteProductById(id) {
       try {
-          let fileContent = await fs.promises.readFile(this.productsFilePath, "utf8");
+          let fileContent = await fs.readFile(this.productsFilePath, "utf8");
           if (fileContent != "") {
               let products = JSON.parse(fileContent);
               const index = products.findIndex((product) => product.id == id);
               if (index != -1) {
                   products.splice(index, 1);
-                  await fs.promises.writeFile(this.productsFilePath, JSON.stringify(products, null, 2));
+                  await fs.writeFile(this.productsFilePath, JSON.stringify(products, null, 2));
                   return 1;
               } else {
                   throw new Error(`No se encontró ningún producto con el ID ${id}`);
@@ -92,13 +93,13 @@ async saveProduct(newProduct) {
 
   async updateProductById(id, updatedProductData) {
       try {
-          let fileContent = await fs.promises.readFile(this.productsFilePath, "utf8");
+          let fileContent = await fs.readFile(this.productsFilePath, "utf8");
           if (fileContent != "") {
               let products = JSON.parse(fileContent);
               const index = products.findIndex((product) => product.id == id);
               if (index != -1) {
                   products[index] = { ...products[index], ...updatedProductData };
-                  await fs.promises.writeFile(this.productsFilePath, JSON.stringify(products, null, 2));
+                  await fs.writeFile(this.productsFilePath, JSON.stringify(products, null, 2));
                   return products[index];
               } else {
                   throw new Error(`No se encontró ningún producto con el ID ${id}`);
@@ -111,6 +112,7 @@ async saveProduct(newProduct) {
 }
 
 }
+
 export default ProductManager;
 
 

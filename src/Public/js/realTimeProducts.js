@@ -1,7 +1,7 @@
 const socket = io();
 
   $(document).ready(function () {
-    $('product-form').submit(function (event) {
+    $('#product-form').submit(function (event) {
       event.preventDefault();
 
       const title = $('#title').val();
@@ -25,7 +25,7 @@ const socket = io();
   });
 
   socket.on('new-product-list', (productList) => {
-    const productListEl = document.querySelector('product-list');
+    const productListEl = document.querySelector('#product-list');
     productListEl.innerHTML = '';
 
     // Crear la tabla

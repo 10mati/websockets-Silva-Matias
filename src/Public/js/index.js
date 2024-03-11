@@ -1,27 +1,18 @@
+// Configuracion del socket del lado del cliente
+const socket = io();
 
-// configuracion de socket del lado del cliente
+// socket.emit('msgKEY', "Hola soy el Cliente enviando un msg")
 
-/*const socket = io();
+// socket.on('msg_02', data => {
+//     console.log(data);
+// })
 
 
-socket.emit('msgKey',"Hola soy el cliente enviando un mensaje ")
+// socket.on('msg_03', data => {
+//     console.log(data);
+// })
 
-socket.on('products', products => {
-  console.log(products);
-const productList = document.getElementById('product-list')
 
-  productList.innerHTML = products.map(product => `
-  <li>
-  <p>Título: ${product.title}</p>
-  <p>Descripción: ${product.descriptions}</p>
-  <p>Código: ${product.code}</p>
-  <p>Precio: ${product.price}</p>
-  <p>Estado: ${product.status}</p>
-  <p>Stock: ${product.stock}</p>
-  <p>Categoría: ${product.category}</p>
-  <p>id: ${product.id}</p>
-  
-
-  </li>`).join('')
-
-})*/
+socket.on('msg_04', data => {
+    console.log(data);
+})
