@@ -2,10 +2,10 @@ import { Router } from "express";
 import CartManager from "../dao/FileSystem/CartManager.js";
 
 
-const CartRouter = Router();
+const cartRouter = Router();
 const carts = new CartManager
 
-CartRouter.get("/", async (req, res) => {
+cartRouter.get("/", async (req, res) => {
     try {
         res.send(await carts.readCarts())
     } catch (error) {
@@ -15,7 +15,7 @@ CartRouter.get("/", async (req, res) => {
 
 
 
-CartRouter.get("/:cid", async (req, res) => {
+cartRouter.get("/:cid", async (req, res) => {
     let id = parseInt(req.params.cid)
     try {
         res.send(await carts.getCartById(id))
@@ -25,7 +25,7 @@ CartRouter.get("/:cid", async (req, res) => {
 })
 
 
-CartRouter.post("/", async (req, res) => {
+cartRouter.post("/", async (req, res) => {
     try {
         const newCart = req.body;
         res.send(await carts.addCart(newCart))
@@ -34,7 +34,7 @@ CartRouter.post("/", async (req, res) => {
     }
 })
 
-CartRouter.post("/:cid/products/:pid", async (req, res) => {
+cartRouter.post("/:cid/products/:pid", async (req, res) => {
     let cartId = parseInt(req.params.cid)
     let productId = parseInt(req.params.pid)
     try {
@@ -46,4 +46,4 @@ CartRouter.post("/:cid/products/:pid", async (req, res) => {
 
 
 
-export default CartRouter;
+export default cartRouter;

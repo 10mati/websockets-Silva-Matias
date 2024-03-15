@@ -2,11 +2,11 @@ import { Router } from "express";
 import ProductManager from "../dao/FileSystem/ProductManager.js";
 
 
-const ProductRouter = Router()
+const productRouter = Router()
 const product = new ProductManager()
 
 
-ProductRouter.get("/", async (req, res) => {
+productRouter.get("/", async (req, res) => {
     try {
         res.send(await product.getProduct())
     } catch (error) {
@@ -14,7 +14,7 @@ ProductRouter.get("/", async (req, res) => {
     }
 })
 
-ProductRouter.get("/:id", async (req, res) => {
+productRouter.get("/:id", async (req, res) => {
     try {
         let id = parseInt(req.params.id)
         res.send(await product.getProductById(id))
@@ -23,7 +23,7 @@ ProductRouter.get("/:id", async (req, res) => {
     }
 })
 
-ProductRouter.post("/", async (req, res) => {
+productRouter.post("/", async (req, res) => {
     try {
         let newproduct = req.body
         res.send(await product.addProducts(newproduct))
@@ -32,7 +32,7 @@ ProductRouter.post("/", async (req, res) => {
     }
 })
 
-ProductRouter.delete("/:id", async (req, res) => {
+productRouter.delete("/:id", async (req, res) => {
     try {
         let id = parseInt(req.params.id)
         res.send(await product.deleteProduct(id))
@@ -41,7 +41,7 @@ ProductRouter.delete("/:id", async (req, res) => {
     }
 })
 
-ProductRouter.put("/:id", async (req, res) => {
+productRouter.put("/:id", async (req, res) => {
     try {
         let id = parseInt(req.params.id)
         let updateProduct = req.body
@@ -52,4 +52,4 @@ ProductRouter.put("/:id", async (req, res) => {
 })
 
 
-export default ProductRouter;
+export default productRouter;

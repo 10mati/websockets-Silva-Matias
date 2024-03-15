@@ -2,14 +2,15 @@ import express from "express";
 import handlebars from 'express-handlebars';
 import __dirname from './utils.js'
 import { Server } from "socket.io";
-import ProductRouter  from "./routes/product.routes.js";
+import productRouter  from "./routes/product.routes.js";
 import cartRouter  from "./routes/carts.routes.js";
 import viewRouter from "./routes/views.routes.js"
 import ProductManager from "./dao/FileSystem/ProductManager.js";
 import mongoose from "mongoose";
 import { messageModels } from "./dao/MongoDb/models/messages.js";
 import { cartModels } from "./dao/MongoDb/models/carts.js";
-
+import ProductRouter from "./routes/db_routes/Product.routes.js";
+import CartsRouter from "./routes/db_routes/Cart.routes.js"
 
 const app = express();
 const PORT = 8080
@@ -26,10 +27,12 @@ app.set('view engine', 'handlebars')
 
 app.use(express.static(__dirname + "/Public"))
 
-app.use("/api/products", ProductRouter)
-app.use("/api/carts", cartRouter)
+app.use("/fs/products", productRouter)
+app.use("/fs/carts", cartRouter)
 app.use("/", viewRouter)
 app.use("/realTimeProducts", viewRouter)
+app.use("/api/products", ProductRouter)
+app.use("/api/carts", CartsRouter)
 
 const httpServer = app.listen(PORT, () => {
     console.log(`Servidor con express Puerto ${PORT}`);
@@ -110,7 +113,7 @@ socketServer.on('connection', (socket) => {
   });
 });*/
 
-app.get("/products", async (req, res) => {
+/*app.get("/products", async (req, res) => {
   try {
     const products = await productModels.insertMany();
     res.send({ result: "success", payload:products });
@@ -143,7 +146,7 @@ app.post('/carts', async (req, res) => {
   } catch (err) {
       res.status(400).json({ message: err.message }); // Manejar errores
   }
-});
+});*/
 
 
 const URL_MONGO = 'mongodb+srv://silvamatias07:J5DdC6lnaBueAeW7@cluster0.6vafnod.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster0'
